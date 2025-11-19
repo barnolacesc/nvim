@@ -80,3 +80,6 @@ vim.keymap.set("n", "<leader>wh", "<cmd>vertical resize -2<cr>", { desc = "Decre
 vim.keymap.set("n", "<leader>wl", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 vim.keymap.set("n", "<leader>wk", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 vim.keymap.set("n", "<leader>wj", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+
+-- Save current buffer with <leader>w
+vim.keymap.set("n", "<leader>w", "<cmd>write<cr>", { desc = "Save current buffer (Write)" })
