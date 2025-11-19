@@ -3,14 +3,80 @@
 -- Add any additional keymaps here
 
 -- Terminal keymaps
--- Open vertical split terminal with <leader>vt
-vim.keymap.set("n", "<leader>vt", ":vsplit | terminal<CR>", { desc = "Vertical split terminal" })
+-- Open vertical split terminal with <leader>vt in current file's directory
+vim.keymap.set("n", "<leader>vt", function()
+  -- Get the directory of the current file, fallback to cwd if no file
+  local current_file = vim.fn.expand("%:p")
+  local file_dir
+
+  if current_file ~= "" and vim.fn.filereadable(current_file) == 1 then
+    file_dir = vim.fn.fnamemodify(current_file, ":h")
+  else
+    file_dir = vim.fn.getcwd()
+  end
+
+  -- Create a new vertical split
+  vim.cmd("vnew")
+
+  -- Change directory locally (only for this window)
+  vim.cmd("lcd " .. vim.fn.fnameescape(file_dir))
+
+  -- Start the terminal
+  vim.cmd("terminal")
+
+  -- Enter insert mode automatically
+  vim.cmd("startinsert")
+end, { desc = "Vertical split terminal (current file dir)" })
+
+-- Open horizontal split terminal with <leader>ht in current file's directory
+vim.keymap.set("n", "<leader>ht", function()
+  -- Get the directory of the current file, fallback to cwd if no file
+  local current_file = vim.fn.expand("%:p")
+  local file_dir
+
+  if current_file ~= "" and vim.fn.filereadable(current_file) == 1 then
+    file_dir = vim.fn.fnamemodify(current_file, ":h")
+  else
+    file_dir = vim.fn.getcwd()
+  end
+
+  -- Create a new horizontal split
+  vim.cmd("new")
+
+  -- Change directory locally (only for this window)
+  vim.cmd("lcd " .. vim.fn.fnameescape(file_dir))
+
+  -- Start the terminal
+  vim.cmd("terminal")
+
+  -- Enter insert mode automatically
+  vim.cmd("startinsert")
+end, { desc = "Horizontal split terminal (current file dir)" })
+
+-- Exit terminal mode with Esc
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Terminal navigation: Ctrl+h to go left, Ctrl+l to go right
 -- Exit terminal mode and navigate
 vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to left window from terminal" })
 vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Go to right window from terminal" })
+vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Go to bottom window from terminal" })
+vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Go to top window from terminal" })
 
--- Also allow Ctrl+h and Ctrl+l in normal mode for window navigation
+-- Also allow Ctrl+hjkl in normal mode for window navigation
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Go to bottom window" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Go to top window" })
+
+-- Resize windows with leader + arrow keys (no conflicts with macOS)
+vim.keymap.set("n", "<leader><Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<leader><Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+vim.keymap.set("n", "<leader><Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+vim.keymap.set("n", "<leader><Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+
+-- Alternative: Use leader+hjkl for resize (vim-style)
+vim.keymap.set("n", "<leader>wh", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<leader>wl", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+vim.keymap.set("n", "<leader>wk", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+vim.keymap.set("n", "<leader>wj", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
