@@ -6,5 +6,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Set shell to the correct zsh location
-vim.opt.shell = "/opt/homebrew/bin/zsh"
+-- Set shell to zsh (prefer homebrew zsh if available, otherwise use system zsh)
+if vim.fn.executable("/opt/homebrew/bin/zsh") == 1 then
+  vim.opt.shell = "/opt/homebrew/bin/zsh"
+elseif vim.fn.executable("/bin/zsh") == 1 then
+  vim.opt.shell = "/bin/zsh"
+end
