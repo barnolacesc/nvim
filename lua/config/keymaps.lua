@@ -53,8 +53,17 @@ vim.keymap.set("n", "<leader>ht", function()
   vim.cmd("startinsert")
 end, { desc = "Horizontal split terminal (current file dir)" })
 
--- Exit terminal mode with Esc
-vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+-- Exit terminal mode with Esc (but not in Lazygit)
+vim.keymap.set("t", "<Esc>", function()
+  local buf_name = vim.api.nvim_buf_get_name(0)
+  if string.match(buf_name, "lazygit") then
+    -- Let Lazygit handle Esc normally
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+  else
+    -- Exit terminal mode for other terminals
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
+  end
+end, { desc = "Exit terminal mode (except in Lazygit)" })
 
 -- Terminal navigation: Ctrl+h to go left, Ctrl+l to go right
 -- Exit terminal mode and navigate
